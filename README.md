@@ -239,6 +239,13 @@ If you wish to have some more detailed monitoring you can run `npm run dev`
 ## Deploying through a web server
 This actually takes some doing, ultimately it is recommended to follow guidance for deploying a NodeJS&reg; through your web server of choice, this should work with almost any, though has only been tested with NGINX.
 
+## Viewing
+Depending on your server configuration, you should be able to go to the address of your device in a web browser and you will see a screen that shows current course and next course status.
+
+If you're testing on a local machine without a domain this will be `http://localhost:3000`
+
+If you've deployed to a web server with a domain it will be at the root of that domain.
+
 ## Common Errors
 ```bash
 Error: Please install <database package name> package manually
