@@ -1,0 +1,32 @@
+{
+  "name": "smm2coursemanager-server",
+  "productName": "Super Mario Maker 2 Course Manager Server",
+  "version": "1.0.0",
+  "description": "This is a server that will handle database communications to assist in managing viewer course submissions for Super Mario Maker 2 streamers.",
+  "license": "MIT",
+  "repository": "https://github.com/TunedChaos/smm2coursemanager-server",
+  "author": {
+    "name": "Tuned Chaos LLC"
+  },
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "clean-css": "^4.2.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "pug": "^2.0.4",
+    "sequelize": "^5.10.1",
+    "sequelize-cli": "^5.5.0",
+    "set-value": "^3.0.1",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}

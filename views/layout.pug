@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/statusbar.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js")
+    script.
+      var socket = io.connect(window.location.href)
+      socket.emit('currently_playing')
+      socket.emit('next_course')
+
+      socket.on('playing_currently', function(response) {
+          loadPlaying(response)
+      })
+      socket.on('course_next', function(response){
+          loadNext(response);
+      })
+
+      socket.on('refresh_course_list', function(){
+        console.log("Received refresh")
+        socket.emit('currently_playing')
+        socket.emit('next_course')
+      })
+  body
+    block content

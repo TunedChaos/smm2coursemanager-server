@@ -1,0 +1,32 @@
+@font-face{
+  font-family: SMM;
+  src: url(../fonts/SMM.ttf) format('truetype')
+}
+body
+{
+  font-family: SMM;
+  overflow-x: hidden;
+  -webkit-app-region: drag;
+  text-align: center;
+  background-color: #00ff00;
+  color: #ffffff;
+}
+td
+{
+  border: solid 1px black;
+  text-align: center;
+}
+table{
+  background-color: #facd00;
+  background-image: linear-gradient(#facd00,#d2ad00);
+  color: black;
+  margin: auto;
+  border: solid 0px black;
+  border-spacing: 0px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#statusbar {
+  width: 100%;
+}
