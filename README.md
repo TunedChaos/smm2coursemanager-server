@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/TunedChaos/smm2coursemanager-server.svg?branch=master)](https://travis-ci.org/TunedChaos/smm2coursemanager-server)
 # SMM2CourseManager Server
 
 SMM2CourseManager Server is a utility meant for serving up an interface between the database that the SMM2Coursemanager uses, and any clients that wish to connect to it.
