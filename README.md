@@ -255,8 +255,3 @@ This is likely because you've configured to utilize a particular database librar
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
-## License
-[MIT](https://github.com/TunedChaos/smm2coursemanager-server/blob/master/LICENSE)
