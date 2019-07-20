@@ -3,15 +3,26 @@
   "productName": "Super Mario Maker 2 Course Manager Server",
   "version": "1.0.0",
   "description": "This is a server that will handle database communications to assist in managing viewer course submissions for Super Mario Maker 2 streamers.",
-  "license": "MIT",
-  "repository": "https://github.com/TunedChaos/smm2coursemanager-server",
-  "author": {
-    "name": "Tuned Chaos LLC"
-  },
+  "main": "./bin/www",
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TunedChaos/smm2coursemanager-server.git"
+  },
+  "keywords": [
+    "mariomaker2",
+    "nintendo",
+    "switch",
+    "smm2coursemanager"
+  ],
+  "author": {
+    "name": "Tuned Chaos LLC"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/TunedChaos/smm2coursemanager-server",
   "dependencies": {
     "clean-css": "^4.2.1",
     "cookie-parser": "~1.4.4",
