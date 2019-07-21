@@ -21,7 +21,7 @@ io.on('connection', function(socket){
      * Get the status of a specific course
      * @param personName the person requesting the status
      * @param courseCode the course code to get the status of
-     * 
+     *
      * @emit  status_course A personalized string message for the requester.
      */
     socket.on('course_status', function(personName, courseCode){
@@ -61,7 +61,7 @@ io.on('connection', function(socket){
      * @param personName the name of the submitter
      * @param courseCode the Mario Maker 2 course or maker code
      * @param authCode   the authcode for confirming access to make changes
-     * 
+     *
      * @emit  course_add a JSON string confirming or denying the change with messages,
      *                   including a personalized one for bots.
      */
@@ -132,7 +132,7 @@ io.on('connection', function(socket){
      * Removes a course from the database
      * @param courseCode     the Mario Maker 2 course or maker code
      * @param authCode       the authcode for confirming access to make changes
-     * 
+     *
      * @emit  course_remove  a JSON string confirming or denying the change with messages
      */
     socket.on('remove_course', function (courseCode, authCode){
@@ -170,7 +170,7 @@ io.on('connection', function(socket){
      * @param newSubmitter  the new submitter data to update into the course
      * @param newStatus     the new status to update into the course
      * @param authCode      the authcode for confirming access to make changes
-     * 
+     *
      * @emit  course_update a JSON string with success, failure, and a message.
      */
     socket.on('update_course', function (index, courseCode, newSubmitter, newStatus, authCode){
@@ -226,7 +226,7 @@ io.on('connection', function(socket){
      * @param courseCode    the Mario Maker 2 Course or Maker Code
      * @param newStatus     the new status to set
      * @param authCode      the authcode for confirming access
-     * 
+     *
      * @emit  status_change a JSON string with success/failure, and a message
      */
     socket.on('change_status', function(courseCode, newStatus, authCode) {
