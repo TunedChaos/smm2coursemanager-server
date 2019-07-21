@@ -17,6 +17,13 @@ io.on('connection', function(socket){
 
     socket.emit('connectSuccess', "Connection to server successful.");
 
+    /**
+     * Get the status of a specific course
+     * @param personName the person requesting the status
+     * @param courseCode the course code to get the status of
+     * 
+     * @emit  status_course A personalized string message for the requester.
+     */
     socket.on('course_status', function(personName, courseCode){
         var courseRegex = /[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}/gi;
         if(courseCode.match(courseRegex) === null)
@@ -49,6 +56,15 @@ io.on('connection', function(socket){
         }
     })
 
+    /**
+     * Adds a course to the database
+     * @param personName the name of the submitter
+     * @param courseCode the Mario Maker 2 course or maker code
+     * @param authCode   the authcode for confirming access to make changes
+     * 
+     * @emit  course_add a JSON string confirming or denying the change with messages,
+     *                   including a personalized one for bots.
+     */
     socket.on('add_course', function (personName, courseCode, authCode){
         responseObj.success = 0
         responseObj.Submitter = personName
@@ -112,6 +128,13 @@ io.on('connection', function(socket){
         }
     })
 
+    /**
+     * Removes a course from the database
+     * @param courseCode     the Mario Maker 2 course or maker code
+     * @param authCode       the authcode for confirming access to make changes
+     * 
+     * @emit  course_remove  a JSON string confirming or denying the change with messages
+     */
     socket.on('remove_course', function (courseCode, authCode){
         responseObj.success = 0
         responseObj.CourseID = courseCode
@@ -140,6 +163,16 @@ io.on('connection', function(socket){
         }
     })
 
+    /**
+     * Updates a course in the database.
+     * @param index         the index in the database of the course to update
+     * @param courseCode    the courseCode to update
+     * @param newSubmitter  the new submitter data to update into the course
+     * @param newStatus     the new status to update into the course
+     * @param authCode      the authcode for confirming access to make changes
+     * 
+     * @emit  course_update a JSON string with success, failure, and a message.
+     */
     socket.on('update_course', function (index, courseCode, newSubmitter, newStatus, authCode){
         responseObj.success = 0
         responseObj.CourseID = courseCode
@@ -188,6 +221,14 @@ io.on('connection', function(socket){
         }
     })
 
+    /**
+     * Changes the status of a course
+     * @param courseCode    the Mario Maker 2 Course or Maker Code
+     * @param newStatus     the new status to set
+     * @param authCode      the authcode for confirming access
+     * 
+     * @emit  status_change a JSON string with success/failure, and a message
+     */
     socket.on('change_status', function(courseCode, newStatus, authCode) {
         responseObj.success = 0
         if(authCode !== process.env.AUTHCODE)
