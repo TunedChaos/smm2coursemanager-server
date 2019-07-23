@@ -15,45 +15,51 @@ io.on('connection', function(socket){
 
     }
 
+    /**
+     * Sends a success connection string
+     */
     socket.emit('connectSuccess', "Connection to server successful.");
 
     /**
-     * Get the status of a specific course
-     * @param personName the person requesting the status
-     * @param courseCode the course code to get the status of
+     * Returns the full list of courses from the table
      *
-     * @emit  status_course A personalized string message for the requester.
+     * @emit course_list a JSON String of all courses
      */
-    socket.on('course_status', function(personName, courseCode){
-        var courseRegex = /[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}/gi;
-        if(courseCode.match(courseRegex) === null)
-        {
-            socket.emit('status_course', "Invalid Course ID " + courseCode + " submitted.")
-            socket.emit('refresh_course_list')
-        }else{
-            models.Course.findOne({ where: {CourseID: courseCode} })
-            .then(course => {
-                var statusString = " is unplayed"
-                switch(course.Status){
-                    case 0:
-                        statusString = "is unplayed"
-                        break
-                    case 1:
-                        statusString = "is being played"
-                        break
-                    case 2:
-                        statusString = "has been played"
-                        break
-                    case 3:
-                        statusString = "has been completed"
-                        break
-                }
-                socket.emit('status_course', personName + ", the course " + courseCode + ", submitted by " + course.Submitter + " " + statusString + ".")
-            })
-            .catch(() =>{
-                socket.emit('status_course', personName + ", the course " + courseCode + " hasn't been submitted yet.")
-            })
-        }
+    socket.on('list_courses', function () {
+        models.Course.findAll().then(function(courses){
+            socket.emit('course_list', JSON.stringify(courses))
+        })
+    })
+
+    /**
+     * Returns the first course in the list with status 1 (playing)
+     *
+     * @emit JSON string with the course information
+     */
+    socket.on('currently_playing', function (){
+        models.Course.findOne({ where: { Status: 1 }})
+        .then (course => {
+            socket.emit('playing_currently', JSON.stringify(course))
+        })
+        .catch(() => {
+            socket.emit('playing_currently', null)
+        })
+    })
+
+    /**
+     * Returns the first course in the list with a status of 0 (unplayed)
+     *
+     * @emit JSON string with the course information.
+     */
+    socket.on('next_course', function(){
+        models.Course.findOne({ where: {Status: 0} })
+        .then(course => {
+            socket.emit('course_next', JSON.stringify(course))
+        })
+        .catch(() => {
+            socket.emit('course_next', null)
+        })
+
     })
 
     /**
@@ -129,41 +135,6 @@ io.on('connection', function(socket){
     })
 
     /**
-     * Removes a course from the database
-     * @param courseCode     the Mario Maker 2 course or maker code
-     * @param authCode       the authcode for confirming access to make changes
-     *
-     * @emit  course_remove  a JSON string confirming or denying the change with messages
-     */
-    socket.on('remove_course', function (courseCode, authCode){
-        responseObj.success = 0
-        responseObj.CourseID = courseCode
-        if(authCode !== process.env.AUTHCODE)
-        {
-            responseObj.success = 0
-            responseObj.message = "You do not have authorization to remove courses."
-            socket.emit('course_remove', JSON.stringify(responseObj))
-            socket.emit('refresh_course_list')
-        }else{
-            models.Course.destroy({
-                where: {
-                    CourseID: courseCode
-                }
-            }).then(() => {
-                responseObj.success = 1
-                responseObj.message = "The course " + courseCode + " has been removed from the database."
-                socket.emit('course_remove', JSON.stringify(responseObj))
-                socket.broadcast.emit('refresh_course_list')
-                socket.emit('refresh_course_list')
-            }).catch(() => {
-                responseObj.success = 0
-                responseObj.message = "There was an error communicating with the database, please try again later."
-                socket.emit('course_remove', JSON.stringify(responseObj))
-            })
-        }
-    })
-
-    /**
      * Updates a course in the database.
      * @param index         the index in the database of the course to update
      * @param courseCode    the courseCode to update
@@ -222,6 +193,80 @@ io.on('connection', function(socket){
     })
 
     /**
+     * Removes a course from the database
+     * @param courseCode     the Mario Maker 2 course or maker code
+     * @param authCode       the authcode for confirming access to make changes
+     *
+     * @emit  course_remove  a JSON string confirming or denying the change with messages
+     */
+    socket.on('remove_course', function (courseCode, authCode){
+        responseObj.success = 0
+        responseObj.CourseID = courseCode
+        if(authCode !== process.env.AUTHCODE)
+        {
+            responseObj.success = 0
+            responseObj.message = "You do not have authorization to remove courses."
+            socket.emit('course_remove', JSON.stringify(responseObj))
+            socket.emit('refresh_course_list')
+        }else{
+            models.Course.destroy({
+                where: {
+                    CourseID: courseCode
+                }
+            }).then(() => {
+                responseObj.success = 1
+                responseObj.message = "The course " + courseCode + " has been removed from the database."
+                socket.emit('course_remove', JSON.stringify(responseObj))
+                socket.broadcast.emit('refresh_course_list')
+                socket.emit('refresh_course_list')
+            }).catch(() => {
+                responseObj.success = 0
+                responseObj.message = "There was an error communicating with the database, please try again later."
+                socket.emit('course_remove', JSON.stringify(responseObj))
+            })
+        }
+    })
+
+    /**
+     * Get the status of a specific course
+     * @param personName the person requesting the status
+     * @param courseCode the course code to get the status of
+     *
+     * @emit  status_course A personalized string message for the requester.
+     */
+    socket.on('course_status', function(personName, courseCode){
+        var courseRegex = /[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}/gi;
+        if(courseCode.match(courseRegex) === null)
+        {
+            socket.emit('status_course', "Invalid Course ID " + courseCode + " submitted.")
+            socket.emit('refresh_course_list')
+        }else{
+            models.Course.findOne({ where: {CourseID: courseCode} })
+            .then(course => {
+                var statusString = " is unplayed"
+                switch(course.Status){
+                    case 0:
+                        statusString = "is unplayed"
+                        break
+                    case 1:
+                        statusString = "is being played"
+                        break
+                    case 2:
+                        statusString = "has been played"
+                        break
+                    case 3:
+                        statusString = "has been completed"
+                        break
+                }
+                socket.emit('status_course', personName + ", the course " + courseCode + ", submitted by " + course.Submitter + " " + statusString + ".")
+            })
+            .catch(() =>{
+                socket.emit('status_course', personName + ", the course " + courseCode + " hasn't been submitted yet.")
+            })
+        }
+    })
+
+    /**
      * Changes the status of a course
      * @param courseCode    the Mario Maker 2 Course or Maker Code
      * @param newStatus     the new status to set
@@ -269,33 +314,6 @@ io.on('connection', function(socket){
                 })
             })
         }
-    })
-
-    socket.on('currently_playing', function (){
-        models.Course.findOne({ where: { Status: 1 }})
-        .then (course => {
-            socket.emit('playing_currently', JSON.stringify(course))
-        })
-        .catch(() => {
-            socket.emit('playing_currently', null)
-        })
-    })
-
-    socket.on('list_courses', function () {
-        models.Course.findAll().then(function(courses){
-            socket.emit('course_list', JSON.stringify(courses))
-        })
-    })
-
-    socket.on('next_course', function(){
-        models.Course.findOne({ where: {Status: 0} })
-        .then(course => {
-            socket.emit('course_next', JSON.stringify(course))
-        })
-        .catch(() => {
-            socket.emit('course_next', null)
-        })
-
     })
 });
 
