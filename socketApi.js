@@ -294,7 +294,7 @@ io.on('connection', function(socket){
                     if(courseCode === courses['rows'][i]['CourseID'])
                     {
                         responseObj.success = 1
-                        if(i === 0){
+                        if(i < 2){
                             responseObj.message = courseCode + " is the next course to be played."
                             responseObj.personalMessage = personName + ", " + courseCode + " is the next course to be played."
                         }else{
