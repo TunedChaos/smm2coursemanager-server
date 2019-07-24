@@ -267,6 +267,72 @@ io.on('connection', function(socket){
     })
 
     /**
+     * Returns the position of a course from the unplayed.
+     * @param courseCode the course that you want to check its position in the queue
+     *
+     * @emit position course a JSON string with success, failure, a message, and a personalized message.
+     */
+    socket.on('course_position', function(personName, courseCode){
+        responseObj.success = 0
+        responseObj.Submitter = personName
+        responseObj.CourseID = courseCode
+        var courseRegex = /[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}/gi;
+        if(courseCode.match(courseRegex) === null)
+        {
+            socket.emit('position_course', "Invalid Course ID " + courseCode + " submitted.")
+            socket.emit('refresh_course_list')
+        }else{
+            models.Course.findAndCountAll({
+                where: { Status: 0 }
+            })
+            .then(courses => {
+                socket.emit('position_course', JSON.stringify(courses))
+                var courseMessage = "";
+                var i;
+                for(i = 0; i < courses['count']; i++){
+                    if(courseCode === courses['rows'][i]['CourseID'])
+                    {
+                        responseObj.success = 1
+                        if(i === 0){
+                            responseObj.message = courseCode + " is the next course to be played."
+                            responseObj.personalMessage = personName + ", " + courseCode + " is the next course to be played."
+                        }
+                        responseObj.message = "The course " + courseCode + " is going to be played after " + ++i + " courses."
+                        responseObj.personalMessage = personName + ", the course " + courseCode + " is going to be played after " + ++i + " courses."
+                    }else{
+                        responseObj.success = 0,
+                        responseObj.message = "The course, " + courseCode + " hasn't been submitted yet."
+                        responseObj.personalMessage = personName + ", the course " + courseCode + " hasn't been submitted yet."
+                    }
+                }
+                socket.emit('position_course', responseObj)
+            })
+        }
+    })
+
+    /**
+     * Returns the total number of unplayed courses in the queue
+     *
+     * @emit queue_get an integer
+     */
+    socket.on('course_queue', function(){
+        models.Course.findAndCountAll({
+            where: { Status: 0 }
+        })
+        .then(courses => {
+            if(courses['count'] > 1)
+            {
+                socket.emit('queue_course', "There are " + courses['count'] + " courses in the queue.")
+            }else{
+                socket.emit('queue_course', "There is " + courses['count'] + " course in the queue.")
+            }
+        })
+        .catch(() => {
+            socket.emit('queue_course', "There are no unplayed courses in the queue.")
+        })
+    })
+
+    /**
      * Changes the status of a course
      * @param courseCode    the Mario Maker 2 Course or Maker Code
      * @param newStatus     the new status to set

@@ -10,6 +10,17 @@ html
       socket.emit('currently_playing')
       socket.emit('next_course')
 
+      socket.emit('course_position','FlyingMongoose','24H-WH5-CMF')
+      //socket.emit('course_queue')
+
+      socket.on('queue_course', function(response){
+        console.log(response)
+      })
+
+      socket.on('position_course', function(response) {
+        console.log(response);
+      })
+
       socket.on('playing_currently', function(response) {
           loadPlaying(response)
       })
