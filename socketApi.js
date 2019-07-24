@@ -304,7 +304,7 @@ io.on('connection', function(socket){
                         responseObj.personalMessage = personName + ", the course " + courseCode + " hasn't been submitted yet."
                     }
                 }
-                socket.emit('position_course', JSON.stringify(responseObj)
+                socket.emit('position_course', JSON.stringify(responseObj))
             })
         }
     })
