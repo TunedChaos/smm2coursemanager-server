@@ -280,7 +280,9 @@ io.on('connection', function(socket){
         var courseRegex = /[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}( |-)[a-hj-np-y\d]{3}/gi;
         if(courseCode.match(courseRegex) === null)
         {
-            socket.emit('position_course', "Invalid Course ID " + courseCode + " submitted.")
+            responseObj.message = "Invalid Course ID " + courseCode + " submitted."
+            responseObj.personalMessage = personName + ", invalid Course ID " + courseCode + " submitted."
+            socket.emit('position_course', JSON.stringify(responseObj))
             socket.emit('refresh_course_list')
         }else{
             models.Course.findAndCountAll({
@@ -295,9 +297,10 @@ io.on('connection', function(socket){
                         if(i === 0){
                             responseObj.message = courseCode + " is the next course to be played."
                             responseObj.personalMessage = personName + ", " + courseCode + " is the next course to be played."
+                        }else{
+                            responseObj.message = "The course " + courseCode + " is going to be played after " + ++i + " courses."
+                            responseObj.personalMessage = personName + ", the course " + courseCode + " is going to be played after " + ++i + " courses."
                         }
-                        responseObj.message = "The course " + courseCode + " is going to be played after " + ++i + " courses."
-                        responseObj.personalMessage = personName + ", the course " + courseCode + " is going to be played after " + ++i + " courses."
                     }else{
                         responseObj.success = 0,
                         responseObj.message = "The course, " + courseCode + " hasn't been submitted yet."
