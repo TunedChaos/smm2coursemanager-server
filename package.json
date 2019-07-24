@@ -1,7 +1,7 @@
 {
   "name": "smm2coursemanager-server",
   "productName": "SMM2 Course Manager Server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is a server that will handle database communications to assist in managing viewer course submissions for Super Mario Maker 2 streamers.",
   "main": "./bin/www",
   "scripts": {
