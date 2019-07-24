@@ -298,8 +298,8 @@ io.on('connection', function(socket){
                             responseObj.message = courseCode + " is the next course to be played."
                             responseObj.personalMessage = personName + ", " + courseCode + " is the next course to be played."
                         }else{
-                            responseObj.message = "The course " + courseCode + " is going to be played after " + ++i + " courses."
-                            responseObj.personalMessage = personName + ", the course " + courseCode + " is going to be played after " + ++i + " courses."
+                            responseObj.message = "The course " + courseCode + " is going to be played after " + i + " courses."
+                            responseObj.personalMessage = personName + ", the course " + courseCode + " is going to be played after " + i + " courses."
                         }
                     }else{
                         responseObj.success = 0,
