@@ -287,8 +287,6 @@ io.on('connection', function(socket){
                 where: { Status: 0 }
             })
             .then(courses => {
-                socket.emit('position_course', JSON.stringify(courses))
-                var courseMessage = "";
                 var i;
                 for(i = 0; i < courses['count']; i++){
                     if(courseCode === courses['rows'][i]['CourseID'])
@@ -306,27 +304,34 @@ io.on('connection', function(socket){
                         responseObj.personalMessage = personName + ", the course " + courseCode + " hasn't been submitted yet."
                     }
                 }
-                socket.emit('position_course', responseObj)
+                socket.emit('position_course', JSON.stringify(responseObj)
             })
         }
     })
 
     /**
      * Returns the total number of unplayed courses in the queue
+     * @param personName the person requesting the queue value.
      *
-     * @emit queue_get an integer
+     * @emit queue_course   a JSON string with success, failure, a personal message, and a generic message.
      */
-    socket.on('course_queue', function(){
+    socket.on('course_queue', function(personName){
+        responseObj.success = 0
+        responseObj.Submitter = personName
         models.Course.findAndCountAll({
             where: { Status: 0 }
         })
         .then(courses => {
+            responseObj.success = 1
             if(courses['count'] > 1)
             {
-                socket.emit('queue_course', "There are " + courses['count'] + " courses in the queue.")
+                responseObj.message = "There are " + courses['count'] + " courses in the queue."
+                responseObj.personalMessage = personName + ", there are " + courses['count'] + " courses in the queue."
             }else{
-                socket.emit('queue_course', "There is " + courses['count'] + " course in the queue.")
+                responseObj.message = "There is " + courses['count'] + " course in the queue."
+                responseObj.personalMessage = personName + ", there is " + courses['count'] + " course in the queue."
             }
+            socket.emit('queue_course', JSON.stringify(responseObj))
         })
         .catch(() => {
             socket.emit('queue_course', "There are no unplayed courses in the queue.")
