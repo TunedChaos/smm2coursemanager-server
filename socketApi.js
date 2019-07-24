@@ -268,6 +268,7 @@ io.on('connection', function(socket){
 
     /**
      * Returns the position of a course from the unplayed.
+     * @param personName the person who requested the course position
      * @param courseCode the course that you want to check its position in the queue
      *
      * @emit position course a JSON string with success, failure, a message, and a personalized message.
