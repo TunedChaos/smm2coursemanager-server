@@ -99,3 +99,6 @@ typings/
 
 # Don't need to broadcast my server information!
 config/config.json
+
+# Don't need to copy testing databases
+*.sqlite
